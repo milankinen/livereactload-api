@@ -35,7 +35,7 @@ module.exports = {
   expose: function(cls, id) {
     withLiveReactload(function(lrload) {
       if (lrload.makeHot) {
-        lrload.makeHot(cls, 'CUSTOM_' + id);
+        lrload.makeHot({exports: cls}, 'CUSTOM_' + id);
       }
     })
   }
