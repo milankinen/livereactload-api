@@ -1,0 +1,17 @@
+{
+  "name": "livereactload-api",
+  "version": "0.0.1",
+  "description": "Browser API for livereactload client operations",
+  "author": "Matti Lankinen <m.lankinen@iki.fi> (https://github.com/milankinen)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:milankinen/livereactload-api.git"
+  },
+  "keywords": ["react", "reload", "real-time", "browserify", "plugin", "development"],
+  "main": "index.js",
+  "scripts": {
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
