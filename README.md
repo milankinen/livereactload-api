@@ -59,7 +59,7 @@ If LiveReactload transformer is not set, then this method does nothing.
 Provides a way to expose anonymous inner classes to LiveReactload so that
 their state can be propagated across reload events.
 
-    var List = lrApi.expose(React.createClass({...}))
+    var List = lrApi.expose(React.createClass({...}), 'MyUniqueListId')
     
     module.exports = React.createClass({
       render: function() {
