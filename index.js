@@ -39,11 +39,13 @@ module.exports = {
   },
 
   expose: function(cls, id) {
+    var mod = { exports: cls };
     withLiveReactload(function(lrload) {
-      if (lrload.makeHot) {
-        lrload.makeHot({exports: cls}, 'CUSTOM_' + id);
+      if (lrload.makeExportsHot) {
+        lrload.makeExportsHot('CUSTOM_' + id, mod);
       }
-    })
+    });
+    return mod.exports;
   }
 
 }
