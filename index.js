@@ -39,6 +39,7 @@ module.exports = {
   },
 
   expose: function(cls, id) {
+    if (!id) throw new Error('ID value is missing. ID is mandatory when exposing anonymous React components')
     var mod = { exports: cls };
     withLiveReactload(function(lrload) {
       if (lrload.makeExportsHot) {
