@@ -1,7 +1,7 @@
 {
   "name": "livereactload-api",
   "version": "0.1.0",
-  "description": "Browser API for livereactload client operations",
+  "description": "API for LiveReactload browser integrations",
   "author": "Matti Lankinen <m.lankinen@iki.fi> (https://github.com/milankinen)",
   "license": "MIT",
   "repository": {
