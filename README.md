@@ -7,7 +7,7 @@ This project contains very lightweight browser API which can be used if
 your application needs to:
 
  * Propagate state between reloading events that is not managed by React components
- * Expose anonymous (non-exported) classes so that their state propagation can be properly
+ * Expose private (non-exported) components so that their state propagation can be properly
    handled during reloading events
 
 This API does not depend on LiveReactload server and browserify transformation
@@ -56,7 +56,7 @@ If LiveReactload transformer is not set, then this method does nothing.
 
 ### .expose(cls, id)
 
-Provides a way to expose anonymous inner classes to LiveReactload so that
+Provides a way to expose private inner components to LiveReactload so that
 their state can be propagated across reload events.
 
     var List = lrApi.expose(React.createClass({...}), 'MyUniqueListId')
@@ -71,4 +71,7 @@ their state can be propagated across reload events.
       }
     })
     
+Note that id is mandatory and it must be unique. You can for example use `__dirname` 
+to ensure uniqueness.
+
 If LiveReactload transformer is not set, then this method does nothing.
