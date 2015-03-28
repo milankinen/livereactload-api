@@ -1,5 +1,4 @@
 
-
 module.exports = {
 
   onLoad: function(callback) {
@@ -7,10 +6,10 @@ module.exports = {
       throw new Error('"onLoad" must have a callback function');
     }
 
-    withLiveReactload(setupOnLoadHandlers)
+    withLiveReactload(setupOnLoadHandlers);
     withoutLiveReactload(function() {
       setupOnLoadHandlers({})
-    })
+    });
 
     function setupOnLoadHandlers(lrload) {
       var winOnload = window.onload;
@@ -49,7 +48,7 @@ module.exports = {
     return mod.exports;
   }
 
-}
+};
 
 function withLiveReactload(cb) {
   if (typeof window !== 'undefined') {
