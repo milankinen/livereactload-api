@@ -6,10 +6,16 @@ module.exports = {
     if (typeof callback !== 'function') {
       throw new Error('"onLoad" must have a callback function');
     }
-    withLiveReactload(function(lrload) {
+
+    withLiveReactload(setupOnLoadHandlers)
+    withoutLiveReactload(function() {
+      setupOnLoadHandlers({})
+    })
+
+    function setupOnLoadHandlers(lrload) {
       var winOnload = window.onload;
       if (!winOnload || !winOnload.__is_livereactload) {
-        window.onload = function() {
+        window.onload = function () {
           // initial load event
           callback(lrload.state);
           lrload.winloadDone = true;
@@ -23,7 +29,7 @@ module.exports = {
         // reload event
         callback(lrload.state)
       }
-    })
+    }
   },
 
   setState: function(state) {
@@ -48,6 +54,12 @@ function withLiveReactload(cb) {
     if (lrload) {
       cb(lrload);
     }
+  }
+}
+
+function withoutLiveReactload(cb) {
+  if (typeof window === 'undefined' || !window.__livereactload) {
+    cb();
   }
 }
 
