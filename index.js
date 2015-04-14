@@ -1,51 +1,41 @@
 
 module.exports = {
 
-  onLoad: function(callback) {
-    if (typeof callback !== 'function') {
-      throw new Error('"onLoad" must have a callback function');
-    }
-
-    withLiveReactload(setupOnLoadHandlers);
-    withoutLiveReactload(function() {
-      setupOnLoadHandlers({})
+  onReload: function(callback) {
+    withLiveReactload(function(lrload) {
+      if (!lrload.onReloadCallbacks) {
+        lrload.onReloadCallbacks = [];
+      }
+      lrload.onReloadCallbacks.push(callback);
     });
+  },
 
-    function setupOnLoadHandlers(lrload) {
-      var winOnload = window.onload;
-      if (!winOnload || !winOnload.__is_livereactload) {
-        window.onload = function () {
-          // initial load event
-          callback(lrload.state);
-          lrload.winloadDone = true;
-          if (typeof winOnload === 'function' && !winOnload.__is_livereactload) {
-            winOnload();
-          }
+  setState: function(name, state) {
+    var numArgs = arguments.length;
+    withLiveReactload(function(lrload) {
+      if (numArgs > 1) {
+        if (!lrload.namedStates) {
+          lrload.namedStates = {};
         }
-      }
-      window.onload.__is_livereactload = true;
-      if (lrload.winloadDone) {
-        // reload event
-        callback(lrload.state)
-      }
-    }
-  },
-
-  setState: function(state) {
-    withLiveReactload(function(lrload) {
-      lrload.state = state;
-    })
-  },
-
-  expose: function(cls, id) {
-    if (!id) throw new Error('ID value is missing. ID is mandatory when exposing anonymous React components')
-    var mod = { exports: cls };
-    withLiveReactload(function(lrload) {
-      if (lrload.makeExportsHot) {
-        lrload.makeExportsHot('CUSTOM_' + id, mod);
+        lrload.namedStates[name] = state;
+      } else {
+        state = name;
+        lrload.state = state;
       }
     });
-    return mod.exports;
+  },
+
+  getState: function(name) {
+    var state;
+    var numArgs = arguments.length;
+    withLiveReactload(function(lrload) {
+      if (numArgs > 0) {
+        state = lrload.namedStates ? lrload.namedStates[name] : undefined;
+      } else {
+        state = lrload.state;
+      }
+    });
+    return state;
   }
 
 };
@@ -58,10 +48,3 @@ function withLiveReactload(cb) {
     }
   }
 }
-
-function withoutLiveReactload(cb) {
-  if (typeof window === 'undefined' || !window.__livereactload) {
-    cb();
-  }
-}
-
