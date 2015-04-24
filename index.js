@@ -36,6 +36,18 @@ module.exports = {
       }
     });
     return state;
+  },
+
+  expose: function(clz, id) {
+    if (!id) {
+      throw new Error('ID is mandatory for class exposing');
+    }
+    withLiveReactload(function(lrload) {
+      if (lrload.exposeClass) {
+        clz = lrload.exposeClass(lrload, clz, id);
+      }
+    });
+    return clz;
   }
 
 };
