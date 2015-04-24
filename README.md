@@ -16,62 +16,66 @@ enabled, then these API methods are practically no-ops.
 
 ## API
 
-    // npm install --save livereactload-api
-    var lrApi = require('livereactload-api')
+```javascript
+// npm install --save livereactload-api
+var lrApi = require('livereactload-api')
+``` 
 
-### .onLoad(callback)
+### .onReload(callback)
 
-This method sets the event listener to the first `window.onload` event 
-and every reloading event. It takes one callback function which is called
-with the previous state that should be propagated across the reload events.
+This method sets the event listener which is triggered when reloading event
+occurs. It takes one callback function that takes no arguments.
 
-    lrApi.onLoad(function(state) {
-      var currentState = state || window.INITIAL_STATE_FROM_SERVER
-      React.render(...use currentState to render your root component ...)
-    })
+```javascript
+lrApi.onReload(function() {
+  var currentState = lrApi.getState() || window.INITIAL_STATE_FROM_SERVER
+  React.render(...use currentState to render your root component ...)
+})
+```
 
-If LiveReactload transformer is not set, then this method is equivalent to
-`window.onload = callback` (state = undefined).
+If LiveReactload transformer is not set, then this method is no-op.
     
-### .setState(newState)
+### .setState([name], newState)
     
-This method sets the state that should be propagated across the next reload
-events. Calling this method sequentially overrides the old values.
-  
-    lrApi.onLoad(function(state) {
-      var initialModel = state || window.INITIAL_STATE_FROM_SERVER
-      // modelStream handles the state when user interacts with the application
-      var modelStream = Bacon.combineTemplate({
-        ...construct stream with initialModel...
-      })
-      modelStream.onValue(function(model) {
-        // next time when reloading occurs, the .onLoad state will receive this model
-        // -> state is propagated 
-        lrApi.setState(model)
-        React.render(...model...)
-      })
-    })
+This sets the state that can be used when next bundle is reloaded. You can set
+multiple state by using name as a first argument. Name is not mandatory.
+Calling this method sequentially overrides the old values.
 
-If LiveReactload transformer is not set, then this method does nothing.
+```javascript
+lrAPI.setState(myGlobalState)
+lrAPI.setState('socket', socket)
+```
 
-### .expose(cls, id)
+If LiveReactload transformer is not set, then this method is no-op.
+
+### .getState([name])
+
+Restores the state. You can also retrieve named state objects by giving an 
+optional name argument. If state is not found then `undefined` is returned.
+
+```javascript
+var global = lrAPI.getState()
+var socket = lrAPI.getState('socket')
+```
+
+### .expose(clz, id)
 
 Provides a way to expose private inner components to LiveReactload so that
-their state can be propagated across reload events.
+their state can be propagated across reload events. 
 
-    var List = lrApi.expose(React.createClass({...}), 'MyUniqueListId')
-    
-    module.exports = React.createClass({
-      render: function() {
-        return (
-          <div>
-            <List items={this.props.items} />
-          </div>
-        )
-      }
-    })
-    
+**ATTENTION:** In LiveReactload version `0.5.0`, automatic class detection 
+was introduced to `React.createClass` so ES6 inner classes are the only use 
+case for this method.
+
+```javascript
+class MyClass extends React.Component {
+  ...
+}
+
+MyClass = lrApi.expose(MyClass, 'MyClass')
+```
+
 Note that id is mandatory and it must be unique. You can for example use `__dirname` 
 to ensure uniqueness.
 
-If LiveReactload transformer is not set, then this method does nothing.
+If LiveReactload transformer is not set, then this method is no-op.
